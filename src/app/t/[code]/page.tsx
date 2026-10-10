@@ -16,7 +16,7 @@ import { Field, Input } from "@/components/ui/Field";
 import { useActions, useStoreReady } from "@/hooks/useApp";
 import { useClickLock } from "@/hooks/useClickLock";
 import { fieldLabel, missingLabel, waitlistPlayers, inPlayers } from "@/lib/capacity";
-import { formatWhenLong } from "@/lib/format";
+import { formatClock, formatWhenLong } from "@/lib/format";
 import { averageRating, canRateMatch } from "@/lib/ratings";
 import {
   isOrganizer,
@@ -132,6 +132,11 @@ export default function MatchPage() {
           kicker="FIFO"
           title={`In · ${ins.length}`}
         />
+        <p className="mb-3 px-1 text-sm leading-6 text-ink-soft">
+          Kush bën In, hyn vetë në listë — s’ke nevojë t’i pranosh. Numri është
+          radha. Te 5+1: 10 lojtarë + 2 GK. Kur fusha është plot, tjerët shkojnë
+          në pritje. Termini s’mbyllet vetë; ti e mbyll In nëse do.
+        </p>
         <Card className="divide-y divide-line">
           {ins.length === 0 ? (
             <p className="p-4 text-sm text-ink-soft">Askush ende. Dërgo linkun.</p>
@@ -140,11 +145,12 @@ export default function MatchPage() {
               <PlayerRow
                 key={p.id}
                 player={p}
+                fifo={i + 1}
                 rating={averageRating(p.personId, state.ratings)}
                 right={
                   <div className="flex items-center gap-2">
                     <span className="text-[11px] font-semibold text-ink-mute">
-                      #{i + 1}
+                      {formatClock(p.joinedAt)}
                     </span>
                     {org ? (
                       <DeleteButton
@@ -168,9 +174,13 @@ export default function MatchPage() {
               <PlayerRow
                 key={p.id}
                 player={p}
+                fifo={i + 1}
+                wait
                 right={
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-ink-mute">#{i + 1}</span>
+                    <span className="text-[11px] text-ink-mute">
+                      {formatClock(p.joinedAt)}
+                    </span>
                     {org ? (
                       <DeleteButton
                         label="Heq"

@@ -42,6 +42,8 @@ export function PlayerRow({
   right,
   onClick,
   selected,
+  fifo,
+  wait,
 }: {
   player: Pick<MatchPlayer, "name" | "isGk"> & { status?: MatchPlayer["status"] };
   rating?: number;
@@ -49,6 +51,8 @@ export function PlayerRow({
   right?: React.ReactNode;
   onClick?: () => void;
   selected?: boolean;
+  fifo?: number;
+  wait?: boolean;
 }) {
   const [locked, setLocked] = useState(false);
 
@@ -69,6 +73,18 @@ export function PlayerRow({
         selected && "bg-pitch-50",
       )}
     >
+      {fifo !== undefined ? (
+        <span
+          className={cx(
+            "grid h-10 w-10 shrink-0 place-items-center rounded-full text-sm font-bold",
+            wait
+              ? "bg-[#f4e3b8] text-[#8a5a00]"
+              : "bg-[#0d5a34] text-white",
+          )}
+        >
+          {fifo}
+        </span>
+      ) : null}
       <Avatar name={player.name} isGk={player.isGk} kit={kit} />
       <div className="min-w-0 flex-1">
         <p className="truncate font-semibold text-ink">{player.name}</p>

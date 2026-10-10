@@ -11,13 +11,16 @@ export function ProgressStats({
 }) {
   const p = matchProgress(match, players);
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className={cx("grid gap-2", p.waitlist ? "grid-cols-3" : "grid-cols-2")}>
       <Stat
         label="Lojtarë"
         value={`${p.outfield}/${p.needOutfield}`}
         ok={p.outfield >= p.needOutfield}
       />
       <Stat label="GK" value={`${p.gk}/${p.needGk}`} ok={p.gk >= p.needGk} />
+      {p.waitlist ? (
+        <Stat label="Pritje" value={String(p.waitlist)} ok={false} />
+      ) : null}
     </div>
   );
 }

@@ -22,6 +22,10 @@ export function formatWhenLong(iso: string): string {
   return `${date} · ${time}`;
 }
 
+export function formatClock(ms: number): string {
+  return TIME.format(new Date(ms));
+}
+
 export function toLocalInputs(iso: string): { date: string; time: string } {
   const d = new Date(iso);
   const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
