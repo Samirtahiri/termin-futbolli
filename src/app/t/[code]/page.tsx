@@ -208,8 +208,8 @@ export default function MatchPage() {
       {org ? (
         <section className="space-y-3">
           <SectionTitle
-            kicker="Backup"
-            title="Shto unë"
+            kicker="Out"
+            title="S’janë In"
             action={
               match.status === "open" ? (
                 <button
@@ -270,7 +270,7 @@ export default function MatchPage() {
           {unusedRoster.length > 0 ? (
             <div className="space-y-2">
               <p className="px-1 text-sm leading-6 text-ink-soft">
-                Këta janë te roster-i, por s’janë In në këtë termin. Shtyp
+                Këta janë lojtarët që s’janë In në këtë termin. Shtyp
                 <span className="font-semibold text-ink"> Shto</span> nëse thanë
                 In vetëm në Viber.
               </p>
@@ -283,7 +283,7 @@ export default function MatchPage() {
                     <div className="min-w-0 flex-1">
                       <p className="font-semibold">{p.name}</p>
                       <p className="text-xs text-ink-mute">
-                        {p.isGk ? "GK · " : ""}s’është In
+                        {p.isGk ? "GK · " : ""}Out
                       </p>
                     </div>
                     <Button
