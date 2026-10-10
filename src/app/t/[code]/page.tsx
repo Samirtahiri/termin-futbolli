@@ -14,6 +14,7 @@ import { DeleteButton } from "@/components/ui/DeleteButton";
 import { Card, SectionTitle } from "@/components/ui/Card";
 import { Field, Input } from "@/components/ui/Field";
 import { useActions, useStoreReady } from "@/hooks/useApp";
+import { useClickLock } from "@/hooks/useClickLock";
 import { fieldLabel, missingLabel, waitlistPlayers, inPlayers } from "@/lib/capacity";
 import { formatWhenLong } from "@/lib/format";
 import { averageRating, canRateMatch } from "@/lib/ratings";
@@ -38,6 +39,7 @@ export default function MatchPage() {
   const missing = match ? missingLabel(match, players) : null;
   const [addName, setAddName] = useState("");
   const [addGk, setAddGk] = useState(false);
+  const lock = useClickLock();
 
   useEffect(() => {
     if (!match) return;
@@ -227,7 +229,7 @@ export default function MatchPage() {
               <Input
                 value={addName}
                 onChange={(e) => setAddName(e.target.value)}
-                placeholder="tha In në Viber"
+                placeholder="Samir"
               />
             </Field>
             <label className="flex items-center gap-2 text-sm font-medium">
@@ -261,14 +263,17 @@ export default function MatchPage() {
                 <button
                   key={p.id}
                   type="button"
+                  disabled={lock.busy(p.id)}
                   onClick={() =>
-                    actions.organizerAddPlayer(match.id, {
-                      name: p.name,
-                      isGk: p.isGk,
-                      personId: p.id,
-                    })
+                    lock.run(p.id, () =>
+                      actions.organizerAddPlayer(match.id, {
+                        name: p.name,
+                        isGk: p.isGk,
+                        personId: p.id,
+                      }),
+                    )
                   }
-                  className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold ring-1 ring-line"
+                  className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold ring-1 ring-line disabled:opacity-50"
                 >
                   {p.name}
                   {p.isGk ? " · GK" : ""}

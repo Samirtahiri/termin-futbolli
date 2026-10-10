@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { Spinner } from "@/components/ui/Spinner";
 import { cx } from "@/lib/cx";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger" | "soft" | "inverse";
@@ -40,11 +42,25 @@ export function Button({
   className,
   type = "button",
   style,
+  disabled,
+  onClick,
+  children,
   ...props
 }: Props) {
+  const [locked, setLocked] = useState(false);
+  const waiting = Boolean(disabled || locked);
+
   return (
     <button
       type={type}
+      disabled={waiting}
+      aria-busy={locked}
+      onClick={(event) => {
+        if (waiting) return;
+        setLocked(true);
+        onClick?.(event);
+        window.setTimeout(() => setLocked(false), 800);
+      }}
       className={cx(
         "inline-flex items-center justify-center gap-2 font-semibold tracking-tight transition-colors disabled:opacity-40 disabled:pointer-events-none",
         variants[variant],
@@ -54,6 +70,9 @@ export function Button({
       )}
       style={{ ...paint[variant], ...style }}
       {...props}
-    />
+    >
+      {locked ? <Spinner /> : null}
+      {children}
+    </button>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
 
 import { Avatar } from "@/components/PlayerRow";
+import { Spinner } from "@/components/ui/Spinner";
+import { useClickLock } from "@/hooks/useClickLock";
 import { formationsFor, roleLabel, slotsFor } from "@/lib/formations";
 import { KIT_BY_TEAM, teamKitLabel } from "@/lib/kits";
 import { cx } from "@/lib/cx";
@@ -24,6 +26,7 @@ export function Pitch({
   onChangeFormation?: (id: FormationId) => void;
 }) {
   const slots = slotsFor(formation);
+  const lock = useClickLock();
 
   return (
     <div className="space-y-2">
@@ -35,7 +38,10 @@ export function Pitch({
               <button
                 key={id}
                 type="button"
-                onClick={() => onChangeFormation?.(id)}
+                disabled={lock.busy(`f-${id}`)}
+                onClick={() =>
+                  lock.run(`f-${id}`, () => onChangeFormation?.(id))
+                }
                 className={cx(
                   "h-8 rounded-full px-3 text-xs font-semibold ring-1",
                   formation === id
@@ -61,9 +67,11 @@ export function Pitch({
             <button
               key={slot.index}
               type="button"
-              disabled={!editable}
-              onClick={() => onSelectSlot?.(slot.index)}
-              className="absolute -translate-x-1/2 -translate-y-1/2 text-center"
+              disabled={!editable || lock.busy(`s-${slot.index}`)}
+              onClick={() =>
+                lock.run(`s-${slot.index}`, () => onSelectSlot?.(slot.index))
+              }
+              className="absolute -translate-x-1/2 -translate-y-1/2 text-center disabled:opacity-60"
               style={{ left: `${slot.x}%`, top: `${slot.y}%` }}
             >
               {player ? (
@@ -81,7 +89,11 @@ export function Pitch({
               ) : (
                 <span className="flex flex-col items-center gap-0.5">
                   <span className="grid h-9 w-9 place-items-center rounded-full bg-white/15 text-lg font-semibold leading-none text-white ring-1 ring-white/70">
-                    +
+                    {lock.busy(`s-${slot.index}`) ? (
+                      <Spinner className="text-white" />
+                    ) : (
+                      "+"
+                    )}
                   </span>
                   <span className="text-[10px] font-semibold text-white/90 drop-shadow">
                     {roleLabel(slot.role)}
@@ -161,6 +173,7 @@ export function Bench({
   kit?: "white" | "black";
   onSelect?: (id: string) => void;
 }) {
+  const lock = useClickLock();
   return (
     <div>
       <p className="mb-1.5 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-mute">
@@ -174,8 +187,9 @@ export function Bench({
             <button
               key={p.id}
               type="button"
-              onClick={() => onSelect?.(p.id)}
-              className="flex items-center gap-1.5 rounded-full bg-white px-2 py-1 ring-1 ring-line"
+              disabled={lock.busy(p.id)}
+              onClick={() => lock.run(p.id, () => onSelect?.(p.id))}
+              className="flex items-center gap-1.5 rounded-full bg-white px-2 py-1 ring-1 ring-line disabled:opacity-50"
             >
               <Avatar name={p.name} isGk={p.isGk} kit={kit} size="sm" />
               <span className="text-xs font-semibold">{p.name.split(" ")[0]}</span>

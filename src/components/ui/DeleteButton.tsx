@@ -1,22 +1,38 @@
+import { useState } from "react";
+import { Spinner } from "@/components/ui/Spinner";
 import { cx } from "@/lib/cx";
 
 export function DeleteButton({
   label = "Fshi",
   className,
+  disabled,
+  onClick,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & { label?: string }) {
+  const [locked, setLocked] = useState(false);
+  const waiting = Boolean(disabled || locked);
+
   return (
     <button
       type="button"
       aria-label={label}
       title={label}
+      aria-busy={locked}
+      disabled={waiting}
+      onClick={(event) => {
+        if (waiting) return;
+        event.stopPropagation();
+        setLocked(true);
+        onClick?.(event);
+        window.setTimeout(() => setLocked(false), 800);
+      }}
       className={cx(
-        "grid h-9 w-9 shrink-0 place-items-center rounded-xl text-[#b91c1c] hover:bg-[#fee2e2] active:bg-[#fecaca]",
+        "grid h-9 w-9 shrink-0 place-items-center rounded-xl text-[#b91c1c] hover:bg-[#fee2e2] active:bg-[#fecaca] disabled:pointer-events-none disabled:opacity-40",
         className,
       )}
       {...props}
     >
-      <TrashIcon />
+      {locked ? <Spinner /> : <TrashIcon />}
     </button>
   );
 }

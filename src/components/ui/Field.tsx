@@ -19,18 +19,22 @@ export function Field({
 }
 
 const box =
-  "w-full h-12 rounded-2xl border border-line bg-white px-3.5 text-base text-ink outline-none transition focus:border-pitch-600 focus:ring-4 focus:ring-pitch-700/10";
+  "box-border w-full min-w-0 max-w-full h-12 rounded-2xl border border-line bg-white px-3.5 text-base text-ink outline-none transition focus:border-pitch-600 focus:ring-4 focus:ring-pitch-700/10";
 
-export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input className={cx(box, props.className)} {...props} />;
+export function Input({
+  className,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement>) {
+  return <input className={cx(box, className)} {...props} />;
 }
 
-export function Textarea(
-  props: React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-) {
+export function Textarea({
+  className,
+  ...props
+}: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
     <textarea
-      className={cx(box, "h-24 py-3 resize-none", props.className)}
+      className={cx(box, "h-24 py-3 resize-none", className)}
       {...props}
     />
   );

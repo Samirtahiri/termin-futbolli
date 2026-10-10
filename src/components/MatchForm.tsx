@@ -57,12 +57,22 @@ export function MatchForm({
           placeholder="Termin"
         />
       </Field>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2">
         <Field label="Data">
-          <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          <Input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="date-field"
+          />
         </Field>
         <Field label="Ora">
-          <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+          <Input
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            className="date-field"
+          />
         </Field>
       </div>
       <Field label="Fusha / vendi">

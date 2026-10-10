@@ -45,7 +45,7 @@ export default function RosterPage() {
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Besnik"
+              placeholder="Samir"
             />
           </Field>
           <label className="flex items-center gap-2 text-sm font-medium">

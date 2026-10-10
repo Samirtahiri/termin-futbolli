@@ -15,6 +15,7 @@ export default function LoginPage() {
   const { becomeOrganizer, logoutOrganizer } = useActions();
   const [email, setEmail] = useState(state.organizer?.email ?? "");
   const [info, setInfo] = useState("");
+  const [sentTo, setSentTo] = useState("");
   const [busy, setBusy] = useState(false);
   const remote = isSupabaseEnabled();
   const loggedIn = isLoggedIn(state);
@@ -28,16 +29,18 @@ export default function LoginPage() {
     if (!sb || !email.trim()) return;
     setBusy(true);
     setInfo("");
+    setSentTo("");
+    const to = email.trim();
     const { error } = await sb.auth.signInWithOtp({
-      email: email.trim(),
+      email: to,
       options: { emailRedirectTo: `${window.location.origin}/hyr` },
     });
     setBusy(false);
-    setInfo(
-      error
-        ? error.message
-        : "Shiko email-in — hap linkun, pastaj je organizator në çdo telefon.",
-    );
+    if (error) {
+      setInfo(error.message);
+      return;
+    }
+    setSentTo(to);
   }
 
   return (
@@ -78,7 +81,20 @@ export default function LoginPage() {
             Hyr (pa Supabase)
           </Button>
         )}
-        {info ? <p className="text-sm text-[#3d5248]">{info}</p> : null}
+        {sentTo ? (
+          <div className="rounded-2xl bg-[#e5f4eb] px-3.5 py-3 text-sm leading-6 text-[#0d5a34]">
+            <p className="font-semibold">Email u dërgua.</p>
+            <p>
+              Shiko inbox-in te <span className="font-semibold">{sentTo}</span>{" "}
+              dhe hap linkun. Pastaj je organizator.
+            </p>
+          </div>
+        ) : null}
+        {info ? (
+          <p className="rounded-2xl bg-[#fee2e2] px-3.5 py-3 text-sm leading-6 text-[#991b1b]">
+            {info}
+          </p>
+        ) : null}
         {loggedIn ? (
           <Button
             variant="ghost"

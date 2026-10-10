@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Badge } from "@/components/ui/Badge";
+import { Spinner } from "@/components/ui/Spinner";
 import { initials } from "@/lib/id";
 import { kitAvatarClass, type Kit } from "@/lib/kits";
 import { formatRating } from "@/lib/ratings";
@@ -48,13 +50,22 @@ export function PlayerRow({
   onClick?: () => void;
   selected?: boolean;
 }) {
+  const [locked, setLocked] = useState(false);
+
   return (
     <div
       role={onClick ? "button" : undefined}
-      onClick={onClick}
+      aria-busy={locked}
+      onClick={() => {
+        if (!onClick || locked) return;
+        setLocked(true);
+        onClick();
+        window.setTimeout(() => setLocked(false), 800);
+      }}
       className={cx(
         "flex items-center gap-3 px-3.5 py-2.5",
         onClick && "cursor-pointer active:bg-cream-50",
+        (onClick && locked) && "pointer-events-none opacity-60",
         selected && "bg-pitch-50",
       )}
     >
@@ -68,7 +79,7 @@ export function PlayerRow({
           ) : null}
         </div>
       </div>
-      {right}
+      {locked ? <Spinner className="text-pitch-700" /> : right}
     </div>
   );
 }

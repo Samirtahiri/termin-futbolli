@@ -82,7 +82,7 @@ export default function RatePage() {
             <Input
               value={claim}
               onChange={(e) => setClaim(e.target.value)}
-              placeholder="p.sh. Flamur"
+              placeholder="Samir"
             />
           </Field>
           <Button

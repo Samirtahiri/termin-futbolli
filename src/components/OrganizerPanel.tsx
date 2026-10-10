@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useClickLock } from "@/hooks/useClickLock";
 import { Button } from "@/components/ui/Button";
 import { DeleteButton } from "@/components/ui/DeleteButton";
 import { Card, SectionTitle } from "@/components/ui/Card";
@@ -22,6 +23,7 @@ export function OrganizerPanel({
   onRemove: (personId: string) => void;
 }) {
   const [copied, setCopied] = useState(false);
+  const lock = useClickLock();
   const link = organizerUrl(match.code, match.organizerToken);
   const managers = match.managerPersonIds
     .map((id) => people.find((p) => p.id === id))
@@ -80,8 +82,9 @@ export function OrganizerPanel({
                 <button
                   key={p.id}
                   type="button"
-                  onClick={() => onAdd(p.id)}
-                  className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-[#14241c] ring-1 ring-[#cfc8ba]"
+                  disabled={lock.busy(p.id)}
+                  onClick={() => lock.run(p.id, () => onAdd(p.id))}
+                  className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-[#14241c] ring-1 ring-[#cfc8ba] disabled:opacity-50"
                 >
                   {p.name}
                   {p.deviceKey ? "" : " · i duhet linku"}

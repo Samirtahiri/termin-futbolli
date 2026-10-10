@@ -38,3 +38,15 @@ a {
 ::selection {
   background: #bfe0cd;
 }
+
+input.date-field {
+  min-width: 0;
+  max-width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input.date-field::-webkit-date-and-time-value {
+  text-align: left;
+  min-width: 0;
+}
