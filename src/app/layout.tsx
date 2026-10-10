@@ -9,11 +9,23 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Termin — futboll",
+  title: "Termin",
+  applicationName: "Termin",
   description: "In, ekipet dhe fusha për terminet e futbollit.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "Termin",
+    statusBarStyle: "default",
+  },
   icons: {
-    icon: [{ url: "/favicon.svg?v=3", type: "image/svg+xml" }],
-    apple: [{ url: "/favicon.svg?v=3", type: "image/svg+xml" }],
+    icon: [
+      { url: "/favicon.svg?v=4", type: "image/svg+xml" },
+      { url: "/favicon.png", type: "image/png", sizes: "32x32" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
 };
 
