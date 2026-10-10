@@ -92,19 +92,27 @@ function Splash() {
 
 function BallIcon() {
   return (
-    <svg viewBox="0 0 32 32" className="h-9 w-9" aria-hidden>
-      <circle cx="16" cy="16" r="15" fill="#0d5a34" />
-      <circle cx="16" cy="16" r="11.5" fill="#f4f1ea" />
+    <svg viewBox="0 0 64 64" className="h-9 w-9" aria-hidden>
+      <defs>
+        <radialGradient id="termin-ball" cx="32%" cy="28%" r="72%">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="55%" stopColor="#f4f1ea" />
+          <stop offset="100%" stopColor="#cfc8ba" />
+        </radialGradient>
+      </defs>
+      <circle cx="32" cy="32" r="31" fill="#0d5a34" />
+      <circle cx="32" cy="32" r="26" fill="url(#termin-ball)" />
       <path
         fill="#14241c"
-        d="M16 11.1 18.7 13l-1 3.2h-3.4l-1-3.2L16 11.1Z"
+        d="M32 18.2 39.1 23.4 36.4 32.2h-8.8l-2.7-8.8Z"
       />
       <path
         fill="none"
         stroke="#14241c"
-        strokeWidth="1.15"
+        strokeWidth="2.2"
         strokeLinejoin="round"
-        d="M16 11.1 18.7 13l3.6-.7M13.3 16.2l-1.4 3.4-3.4.2M18.7 16.2l1.4 3.4 3.4.2M14.3 19.6h3.4L19 23.2M11.6 12.3 8.4 10.8M20.4 12.3 23.6 10.8M16 4.6v3.2M6.2 20.4l3.1-1.1M25.8 20.4l-3.1-1.1"
+        strokeLinecap="round"
+        d="M32 18.2 39.1 23.4l9.2-1.4M24.9 23.4 15.7 22M36.4 32.2l4.1 8.6 9.2 1.2M27.6 32.2l-4.1 8.6-9.2 1.2M29.2 40.8h5.6L38 51.2M26 51.2 29.2 40.8M15.7 22l5.2 10.2M48.3 22 43.1 32.2M32 6.4v11.8M10.6 48.6l8.6-6.6M53.4 48.6l-8.6-6.6"
       />
     </svg>
   );

@@ -16,7 +16,7 @@ import { Field, Input } from "@/components/ui/Field";
 import { useActions, useStoreReady } from "@/hooks/useApp";
 import { fieldLabel, missingLabel, waitlistPlayers, inPlayers } from "@/lib/capacity";
 import { formatWhenLong } from "@/lib/format";
-import { averageRating } from "@/lib/ratings";
+import { averageRating, canRateMatch } from "@/lib/ratings";
 import {
   isOrganizer,
   matchByCode,
@@ -120,7 +120,7 @@ export default function MatchPage() {
         </Link>
         <Link href={`/t/${match.code}/vlereso`}>
           <Button variant="secondary" block>
-            Vlerëso
+            {canRateMatch(match.startsAt) ? "Vlerëso" : "Vlerëso · 1h pas"}
           </Button>
         </Link>
       </div>

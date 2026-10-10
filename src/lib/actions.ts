@@ -1,4 +1,5 @@
 import { nextJoinStatus } from "./capacity";
+import { canRateMatch } from "./ratings";
 import { isSupabaseEnabled } from "./supabase";
 import { defaultFormation, formationsFor } from "./formations";
 import { matchCode, nameKey, normalizeName, raterKey, uid } from "./id";
@@ -358,6 +359,7 @@ export function ratePerson(
   state: AppState,
   rateeId: string,
   score: number,
+  matchId?: string,
 ): AppState {
   const key = raterKey({
     organizerId: state.organizer?.id,
@@ -365,11 +367,32 @@ export function ratePerson(
   });
   if (!key) return state;
   if (state.identity?.personId === rateeId) return state;
+  if (matchId) {
+    const match = state.matches.find((m) => m.id === matchId);
+    if (!match || !canRateMatch(match.startsAt)) return state;
+    const mine = state.matchPlayers.find((p) => {
+      if (p.matchId !== matchId || p.status === "removed") return false;
+      if (p.personId === state.identity?.personId) return true;
+      return Boolean(
+        state.identity?.name &&
+          nameKey(p.name) === nameKey(state.identity.name),
+      );
+    });
+    if (!mine) return state;
+  }
   const clamped = Math.min(10, Math.max(1, Math.round(score)));
   const rest = state.ratings.filter(
-    (r) => !(r.raterKey === key && r.rateeId === rateeId),
+    (r) =>
+      !(
+        r.raterKey === key &&
+        r.rateeId === rateeId &&
+        (matchId ? r.matchId === matchId : !r.matchId)
+      ),
   );
-  return { ...state, ratings: [...rest, { raterKey: key, rateeId, score: clamped }] };
+  return {
+    ...state,
+    ratings: [...rest, { raterKey: key, rateeId, score: clamped, matchId }],
+  };
 }
 
 export function addRosterPlayer(

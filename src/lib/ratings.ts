@@ -16,10 +16,27 @@ export function myScore(
   raterKey: string | null,
   rateeId: string,
   ratings: Rating[],
+  matchId?: string,
 ): number | null {
   if (!raterKey) return null;
-  return ratings.find((r) => r.raterKey === raterKey && r.rateeId === rateeId)
-    ?.score ?? null;
+  return (
+    ratings.find(
+      (r) =>
+        r.raterKey === raterKey &&
+        r.rateeId === rateeId &&
+        (matchId ? r.matchId === matchId : !r.matchId),
+    )?.score ?? null
+  );
+}
+
+export const RATE_AFTER_MS = 60 * 60 * 1000;
+
+export function ratingOpensAt(startsAt: string): number {
+  return new Date(startsAt).getTime() + RATE_AFTER_MS;
+}
+
+export function canRateMatch(startsAt: string, now = Date.now()): boolean {
+  return now >= ratingOpensAt(startsAt);
 }
 
 export function formatRating(value: number): string {

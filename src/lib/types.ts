@@ -68,6 +68,7 @@ export type Rating = {
   raterKey: string;
   rateeId: string;
   score: number;
+  matchId?: string;
 };
 
 export type AppState = {

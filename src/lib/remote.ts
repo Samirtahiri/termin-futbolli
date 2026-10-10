@@ -46,6 +46,26 @@ type PlayerRow = {
 type PersonRow = { id: string; name: string; is_gk: boolean };
 type RatingRow = { rater_key: string; ratee_id: string; score: number };
 
+function ratingFromRow(row: RatingRow): Rating {
+  const sep = row.rater_key.indexOf("::");
+  return {
+    raterKey: sep === -1 ? row.rater_key : row.rater_key.slice(0, sep),
+    matchId: sep === -1 ? undefined : row.rater_key.slice(sep + 2),
+    rateeId: row.ratee_id,
+    score: row.score,
+  };
+}
+
+function ratingToRow(rating: Rating): RatingRow {
+  return {
+    rater_key: rating.matchId
+      ? `${rating.raterKey}::${rating.matchId}`
+      : rating.raterKey,
+    ratee_id: rating.rateeId,
+    score: rating.score,
+  };
+}
+
 export type PulledMatch = {
   match: Match;
   players: MatchPlayer[];
@@ -129,9 +149,11 @@ export function mergePulled(state: AppState, pulled: PulledMatch): AppState {
   const peopleMap = new Map(state.people.map((p) => [p.id, p]));
   pulled.people.forEach((p) => peopleMap.set(p.id, p));
   const ratingMap = new Map(
-    state.ratings.map((r) => [`${r.raterKey}:${r.rateeId}`, r]),
+    state.ratings.map((r) => [`${r.raterKey}:${r.rateeId}:${r.matchId ?? ""}`, r]),
   );
-  pulled.ratings.forEach((r) => ratingMap.set(`${r.raterKey}:${r.rateeId}`, r));
+  pulled.ratings.forEach((r) =>
+    ratingMap.set(`${r.raterKey}:${r.rateeId}:${r.matchId ?? ""}`, r),
+  );
   return {
     ...state,
     matches: [
@@ -177,11 +199,9 @@ export async function pullMatch(code: string): Promise<PulledMatch | null> {
   const { data: ratingRows } = personIds.length
     ? await sb.from("ratings").select("*").in("ratee_id", personIds)
     : { data: [] };
-  const ratings = ((ratingRows ?? []) as RatingRow[]).map((r) => ({
-    raterKey: r.rater_key,
-    rateeId: r.ratee_id,
-    score: r.score,
-  }));
+  const ratings = ((ratingRows ?? []) as RatingRow[]).map((r) =>
+    ratingFromRow(r),
+  );
   return { match, players, people, ratings };
 }
 
@@ -221,11 +241,7 @@ export async function pushAppState(state: AppState): Promise<void> {
   }
   if (state.ratings.length) {
     const { error } = await sb.from("ratings").upsert(
-      state.ratings.map((r) => ({
-        rater_key: r.raterKey,
-        ratee_id: r.rateeId,
-        score: r.score,
-      })),
+      state.ratings.map(ratingToRow),
     );
     if (error) console.error("supabase ratings", error.message);
   }

@@ -11,12 +11,14 @@ export function RatingList({
   ratings,
   raterKey,
   selfPersonId,
+  matchId,
   onRate,
 }: {
   people: Person[];
   ratings: Rating[];
   raterKey: string | null;
   selfPersonId?: string;
+  matchId?: string;
   onRate: (personId: string, score: number) => void;
 }) {
   const others = people.filter((p) => p.id !== selfPersonId);
@@ -42,7 +44,7 @@ export function RatingList({
       {others.map((person) => {
         const count = ratingCount(person.id, ratings);
         const avg = averageRating(person.id, ratings);
-        const mine = myScore(raterKey, person.id, ratings);
+        const mine = myScore(raterKey, person.id, ratings, matchId);
         return (
           <div key={person.id} className="p-3.5 space-y-3">
             <div className="flex items-center gap-3">
