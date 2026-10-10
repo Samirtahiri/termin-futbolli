@@ -21,7 +21,7 @@ export function RatingScale({
             className={cx(
               "grid h-11 place-items-center rounded-xl text-sm font-bold ring-1",
               value === n
-                ? "bg-pitch-700 text-white ring-pitch-700"
+                ? "bg-pitch-700 !text-white ring-pitch-700"
                 : "bg-white text-ink ring-line",
             )}
           >

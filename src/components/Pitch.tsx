@@ -39,7 +39,7 @@ export function Pitch({
                 className={cx(
                   "h-8 rounded-full px-3 text-xs font-semibold ring-1",
                   formation === id
-                    ? "bg-pitch-700 text-white ring-pitch-700"
+                    ? "bg-pitch-700 !text-white ring-pitch-700"
                     : "bg-white text-ink ring-line",
                 )}
               >

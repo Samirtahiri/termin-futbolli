@@ -25,7 +25,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-20 border-b border-[#cfc8ba]/80 bg-[#f4f1ea]/90 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-lg items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="grid h-8 w-8 place-items-center rounded-xl bg-[#0d5a34] text-white shadow-sm">
+            <span className="grid h-9 w-9 place-items-center" aria-hidden>
               <BallIcon />
             </span>
             <span className="text-[15px] font-semibold tracking-tight text-[#14241c]">
@@ -57,7 +57,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {ready ? children : <Splash />}
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-[#cfc8ba]/80 bg-[#f4f1ea]/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
+      <nav className="fixed inset-x-0 bottom-0 z-20 bg-[#0d5a34] pb-[env(safe-area-inset-bottom)]">
         <div className="mx-auto grid max-w-lg grid-cols-3 px-2">
           {NAV.map((item) => {
             const active = path === item.href;
@@ -68,8 +68,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={href}
                 className={cx(
-                  "flex h-14 items-center justify-center text-sm font-semibold",
-                  active ? "text-[#0d5a34]" : "text-[#5a6b62]",
+                  "flex h-14 items-center justify-center text-sm font-semibold !text-white",
+                  active ? "opacity-100" : "opacity-60",
                 )}
               >
                 {item.label}
@@ -92,14 +92,20 @@ function Splash() {
 
 function BallIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden>
-      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.8" />
+    <svg viewBox="0 0 32 32" className="h-9 w-9" aria-hidden>
+      <circle cx="16" cy="16" r="15" fill="#0d5a34" />
+      <circle cx="16" cy="16" r="11.5" fill="#f4f1ea" />
       <path
-        d="M12 3.5c2.2 2 3.4 5 3.4 8.5S14.2 18.5 12 20.5C9.8 18.5 8.6 15.5 8.6 12S9.8 5.5 12 3.5Z"
-        stroke="currentColor"
-        strokeWidth="1.4"
+        fill="#14241c"
+        d="M16 11.1 18.7 13l-1 3.2h-3.4l-1-3.2L16 11.1Z"
       />
-      <path d="M4.6 9.2h14.8M4.6 14.8h14.8" stroke="currentColor" strokeWidth="1.4" />
+      <path
+        fill="none"
+        stroke="#14241c"
+        strokeWidth="1.15"
+        strokeLinejoin="round"
+        d="M16 11.1 18.7 13l3.6-.7M13.3 16.2l-1.4 3.4-3.4.2M18.7 16.2l1.4 3.4 3.4.2M14.3 19.6h3.4L19 23.2M11.6 12.3 8.4 10.8M20.4 12.3 23.6 10.8M16 4.6v3.2M6.2 20.4l3.1-1.1M25.8 20.4l-3.1-1.1"
+      />
     </svg>
   );
 }
