@@ -74,14 +74,7 @@ export function PlayerRow({
       )}
     >
       {fifo !== undefined ? (
-        <span
-          className={cx(
-            "grid h-10 w-10 shrink-0 place-items-center rounded-full text-sm font-bold",
-            wait
-              ? "bg-[#f4e3b8] text-[#8a5a00]"
-              : "bg-[#0d5a34] text-white",
-          )}
-        >
+        <span className="w-5 shrink-0 text-right text-sm tabular-nums text-[#5a6b62]">
           {fifo}
         </span>
       ) : null}
