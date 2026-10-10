@@ -1,16 +1,24 @@
 import { cx } from "@/lib/cx";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger" | "soft";
+type Variant = "primary" | "secondary" | "ghost" | "danger" | "soft" | "inverse";
 type Size = "sm" | "md" | "lg";
 
 const variants: Record<Variant, string> = {
-  primary:
-    "bg-[#0d5a34] !text-white shadow-sm hover:bg-[#0a4628] active:bg-[#07331c]",
-  secondary:
-    "bg-[#faf8f3] !text-[#14241c] ring-1 ring-[#cfc8ba] hover:bg-[#ece7dc]",
-  ghost: "bg-transparent !text-[#14241c] hover:bg-black/5",
-  danger: "bg-[#b91c1c] !text-white hover:bg-[#991b1b]",
-  soft: "bg-[#e5f4eb] !text-[#0d5a34] hover:bg-[#bfe0cd]",
+  primary: "shadow-sm hover:bg-[#0a4628] active:bg-[#07331c]",
+  secondary: "ring-1 ring-[#cfc8ba] hover:bg-[#ece7dc]",
+  ghost: "hover:bg-black/5",
+  danger: "hover:bg-[#991b1b]",
+  soft: "hover:bg-[#bfe0cd]",
+  inverse: "hover:bg-[#f4f1ea]",
+};
+
+const paint: Record<Variant, { backgroundColor: string; color: string }> = {
+  primary: { backgroundColor: "#0d5a34", color: "#ffffff" },
+  secondary: { backgroundColor: "#faf8f3", color: "#0d5a34" },
+  ghost: { backgroundColor: "transparent", color: "#0d5a34" },
+  danger: { backgroundColor: "#b91c1c", color: "#ffffff" },
+  soft: { backgroundColor: "#e5f4eb", color: "#0d5a34" },
+  inverse: { backgroundColor: "#ffffff", color: "#0d5a34" },
 };
 
 const sizes: Record<Size, string> = {
@@ -31,6 +39,7 @@ export function Button({
   block,
   className,
   type = "button",
+  style,
   ...props
 }: Props) {
   return (
@@ -43,6 +52,7 @@ export function Button({
         block && "w-full",
         className,
       )}
+      style={{ ...paint[variant], ...style }}
       {...props}
     />
   );

@@ -30,10 +30,7 @@ export default function HomePage() {
         </p>
         <div className="mt-5">
           <Link href={loggedIn ? "/krijo" : "/hyr"}>
-            <Button
-              className="!bg-white !text-[#0d5a34] hover:!bg-[#f4f1ea]"
-              size="lg"
-            >
+            <Button variant="inverse" size="lg">
               {loggedIn ? "Krijo termin" : "Hyr dhe krijo"}
             </Button>
           </Link>
