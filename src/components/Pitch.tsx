@@ -1,10 +1,11 @@
 "use client";
 
+import { TeamName } from "@/components/BallMark";
 import { Avatar } from "@/components/PlayerRow";
 import { Spinner } from "@/components/ui/Spinner";
 import { useClickLock } from "@/hooks/useClickLock";
 import { formationsFor, roleLabel, slotsFor } from "@/lib/formations";
-import { KIT_BY_TEAM, teamKitLabel } from "@/lib/kits";
+import { KIT_BY_TEAM } from "@/lib/kits";
 import { cx } from "@/lib/cx";
 import type { FieldType, FormationId, MatchPlayer } from "@/lib/types";
 
@@ -31,27 +32,32 @@ export function Pitch({
   return (
     <div className="space-y-2">
       <div className="px-1">
-        <p className="text-sm font-semibold text-[#14241c]">{teamKitLabel(team)}</p>
+        <TeamName team={team} className="text-[#14241c]" />
         {editable ? (
           <div className="mt-2 flex flex-wrap gap-1.5">
-            {formationsFor(fieldType).map((id) => (
-              <button
-                key={id}
-                type="button"
-                disabled={lock.busy(`f-${id}`)}
-                onClick={() =>
-                  lock.run(`f-${id}`, () => onChangeFormation?.(id))
-                }
-                className={cx(
-                  "h-8 rounded-full px-3 text-xs font-semibold ring-1",
-                  formation === id
-                    ? "bg-pitch-700 !text-white ring-pitch-700"
-                    : "bg-white text-ink ring-line",
-                )}
-              >
-                {id}
-              </button>
-            ))}
+            {formationsFor(fieldType).map((id) => {
+              const waiting = Boolean(lock.locked);
+              const mine = lock.busy(`f-${id}`);
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  disabled={waiting}
+                  onClick={() =>
+                    lock.run(`f-${id}`, () => onChangeFormation?.(id))
+                  }
+                  className={cx(
+                    "inline-flex h-8 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-semibold ring-1 disabled:pointer-events-none disabled:opacity-60",
+                    formation === id
+                      ? "bg-pitch-700 !text-white ring-pitch-700"
+                      : "bg-white text-ink ring-line",
+                  )}
+                >
+                  {mine ? <Spinner className="h-3.5 w-3.5" /> : null}
+                  {id}
+                </button>
+              );
+            })}
           </div>
         ) : (
           <p className="text-xs text-ink-mute">{formation}</p>
@@ -67,7 +73,7 @@ export function Pitch({
             <button
               key={slot.index}
               type="button"
-              disabled={!editable || lock.busy(`s-${slot.index}`)}
+              disabled={!editable || Boolean(lock.locked)}
               onClick={() =>
                 lock.run(`s-${slot.index}`, () => onSelectSlot?.(slot.index))
               }
@@ -166,19 +172,24 @@ export function Bench({
   title,
   players,
   kit,
+  team,
   onSelect,
 }: {
   title: string;
   players: MatchPlayer[];
   kit?: "white" | "black";
+  team?: "A" | "B";
   onSelect?: (id: string) => void;
 }) {
   const lock = useClickLock();
   return (
     <div>
-      <p className="mb-1.5 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-mute">
-        {title}
-      </p>
+      <div className="mb-1.5 flex items-center gap-2 px-1">
+        {team ? <TeamName team={team} className="text-[13px] text-ink" /> : null}
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-mute">
+          {team ? "Stoli" : title}
+        </p>
+      </div>
       <div className="flex flex-wrap gap-2">
         {players.length === 0 ? (
           <span className="text-xs text-ink-mute">Bosh</span>

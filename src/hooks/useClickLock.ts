@@ -17,7 +17,7 @@ export function useClickLock(ms = 800) {
 
   const run = useCallback(
     (key: string, fn: () => void) => {
-      if (current.current === key) return;
+      if (current.current) return;
       current.current = key;
       setBusyKey(key);
       fn();

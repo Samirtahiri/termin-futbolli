@@ -13,6 +13,7 @@ import { inPlayers, missingLabel } from "@/lib/capacity";
 import { roleLabel, slotsFor } from "@/lib/formations";
 import { averageRating, formatRating, teamRating } from "@/lib/ratings";
 import { isOrganizer, matchByCode, playersOf } from "@/lib/selectors";
+import { BallMark, TeamName } from "@/components/BallMark";
 import { teamKitLabel } from "@/lib/kits";
 import { sidePlayers } from "@/lib/teams";
 import type { MatchPlayer, TeamSide } from "@/lib/types";
@@ -73,7 +74,10 @@ export default function TeamsPage() {
             ← Termin
           </Link>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight">Ekipet</h1>
-          <p className="mt-1 text-sm text-[#3d5248]">A të bardha · B të zeza</p>
+          <p className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[#3d5248]">
+            <TeamName team="A" />
+            <TeamName team="B" />
+          </p>
           {missing ? (
             <p className="mt-1 text-sm font-medium text-amber-800">{missing}</p>
           ) : (
@@ -131,8 +135,10 @@ export default function TeamsPage() {
 
       {captainTurn ? (
         <Card className="p-3 text-sm font-medium text-ink">
-          Zgjedh për {captainTurn === "A" ? "të bardhat" : "të zezat"}. Shtyp
-          një lojtar nga pool-i.
+          <span className="inline-flex items-center gap-2">
+            Zgjedh për <TeamName team={captainTurn} />
+          </span>
+          . Shtyp një lojtar nga pool-i.
         </Card>
       ) : null}
 
@@ -140,13 +146,19 @@ export default function TeamsPage() {
         <div className="grid grid-cols-4 gap-2">
           {(["A", "B", "bench_a", "bench_b"] as const).map((side) => (
             <Button key={side} size="sm" variant="soft" onClick={() => place(side)}>
-              {side === "A"
-                ? "Bardhë"
-                : side === "B"
-                  ? "Zezë"
-                  : side === "bench_a"
-                    ? "Stoli bardhë"
-                    : "Stoli zezë"}
+              <span className="inline-flex items-center gap-1">
+                <BallMark
+                  kit={side === "A" || side === "bench_a" ? "white" : "black"}
+                  className="h-4 w-4"
+                />
+                {side === "A"
+                  ? "Bardhë"
+                  : side === "B"
+                    ? "Zezë"
+                    : side === "bench_a"
+                      ? "Stoli"
+                      : "Stoli"}
+              </span>
             </Button>
           ))}
         </div>
@@ -154,7 +166,7 @@ export default function TeamsPage() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <TeamCol
-          title={teamKitLabel("A")}
+          team="A"
           kit="white"
           players={groups.A}
           ratings={state.ratings}
@@ -162,7 +174,7 @@ export default function TeamsPage() {
           onSelect={onSelectPlayer}
         />
         <TeamCol
-          title={teamKitLabel("B")}
+          team="B"
           kit="black"
           players={groups.B}
           ratings={state.ratings}
@@ -198,8 +210,9 @@ export default function TeamsPage() {
         onSelectSlot={(slot) => setPicking({ team: "A", slotIndex: slot })}
       />
       <Bench
-        title="Stoli · Të bardha"
+        title="Stoli"
         kit="white"
+        team="A"
         players={groups.benchA}
         onSelect={onSelectPlayer}
       />
@@ -213,8 +226,9 @@ export default function TeamsPage() {
         onSelectSlot={(slot) => setPicking({ team: "B", slotIndex: slot })}
       />
       <Bench
-        title="Stoli · Të zeza"
+        title="Stoli"
         kit="black"
+        team="B"
         players={groups.benchB}
         onSelect={onSelectPlayer}
       />
@@ -261,14 +275,14 @@ export default function TeamsPage() {
 }
 
 function TeamCol({
-  title,
+  team,
   kit,
   players,
   ratings,
   selected,
   onSelect,
 }: {
-  title: string;
+  team: "A" | "B";
   kit: "white" | "black";
   players: MatchPlayer[];
   ratings: { raterKey: string; rateeId: string; score: number }[];
@@ -285,7 +299,7 @@ function TeamCol({
             : "flex items-center justify-between bg-[#111] px-3.5 py-3 text-white"
         }
       >
-        <p className="font-semibold">{title}</p>
+        <TeamName team={team} className={kit === "black" ? "text-white" : "text-ink"} />
         <p className={kit === "white" ? "text-xs text-[#5a6b62]" : "text-xs text-white/70"}>
           {players.length} · {players.length ? formatRating(avg) : "—"}
         </p>
