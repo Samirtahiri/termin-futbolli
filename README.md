@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Termin
 
-## Getting Started
+App për termined e futbollit: **5+1** dhe **10+1**, In me link, FIFO, ekipet, formacioni, vlerësim peer.
 
-First, run the development server:
+## Lokal
 
 ```bash
+cd termin-futbolli
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Hap [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Hyr** si organizator (në këtë telefon).
+2. **Krijo** termin bosh.
+3. **Kopjo / Viber** — ata bëjnë In.
+4. **Ekipet** — sipas rating, random, përziej, manual, kapitënë.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Pa Supabase, lista rri në `localStorage` të këtij telefoni.
 
-## Learn More
+## Supabase (fullstack, falas)
 
-To learn more about Next.js, take a look at the following resources:
+1. Krijo projekt te [supabase.com](https://supabase.com) (Free).
+2. **SQL Editor** → ngjit krejt [`supabase/schema.sql`](supabase/schema.sql) → Run.
+3. **Authentication → Providers → Email** = ON (magic link).
+4. **Authentication → URL Configuration**:
+   - Site URL: `http://localhost:3000`
+   - Redirect: `http://localhost:3000/**` (dhe më vonë `https://projekti.vercel.app/**`)
+5. **Project Settings → API**: kopjo Project URL dhe `anon` `public` key.
+6. Krijo `.env.local` në root:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+7. Ndalo dhe nise prapë `npm run dev`. Header duhet të tregojë **Online**.
+8. Test: krijo termin në Chrome → hap linkun në telefon / Incognito → In. Duhet të shfaqet te lista.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deploy: Vercel + të njëjtat env + shto URL-në e Vercel te Supabase redirect.

@@ -1,26 +1,40 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-cream: #f4f1ea;
+  --color-cream-50: #faf8f3;
+  --color-cream-100: #ece7dc;
+  --color-ink: #14241c;
+  --color-ink-soft: #3d5248;
+  --color-ink-mute: #5a6b62;
+  --color-line: #cfc8ba;
+  --color-pitch-50: #e5f4eb;
+  --color-pitch-100: #bfe0cd;
+  --color-pitch-600: #187a44;
+  --color-pitch-700: #0d5a34;
+  --color-pitch-800: #0a4628;
+  --color-pitch-900: #07331c;
+  --color-team-a: #1d4ed8;
+  --color-team-b: #b91c1c;
+  --color-gk: #c48800;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f1ea;
+  color: #14241c;
+  font-family: var(--font-sans);
+}
+
+button,
+a {
+  color: inherit;
+}
+
+::selection {
+  background: #bfe0cd;
 }
