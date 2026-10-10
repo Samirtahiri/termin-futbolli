@@ -268,27 +268,43 @@ export default function MatchPage() {
             </Button>
           </Card>
           {unusedRoster.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {unusedRoster.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  disabled={lock.busy(p.id)}
-                  onClick={() =>
-                    lock.run(p.id, () =>
-                      actions.organizerAddPlayer(match.id, {
-                        name: p.name,
-                        isGk: p.isGk,
-                        personId: p.id,
-                      }),
-                    )
-                  }
-                  className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold ring-1 ring-line disabled:opacity-50"
-                >
-                  {p.name}
-                  {p.isGk ? " · GK" : ""}
-                </button>
-              ))}
+            <div className="space-y-2">
+              <p className="px-1 text-sm leading-6 text-ink-soft">
+                Këta janë te roster-i, por s’janë In në këtë termin. Shtyp
+                <span className="font-semibold text-ink"> Shto</span> nëse thanë
+                In vetëm në Viber.
+              </p>
+              <Card className="divide-y divide-line">
+                {unusedRoster.map((p) => (
+                  <div
+                    key={p.id}
+                    className="flex items-center gap-3 px-3.5 py-2.5"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold">{p.name}</p>
+                      <p className="text-xs text-ink-mute">
+                        {p.isGk ? "GK · " : ""}s’është In
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={lock.busy(p.id)}
+                      onClick={() =>
+                        lock.run(p.id, () =>
+                          actions.organizerAddPlayer(match.id, {
+                            name: p.name,
+                            isGk: p.isGk,
+                            personId: p.id,
+                          }),
+                        )
+                      }
+                    >
+                      Shto
+                    </Button>
+                  </div>
+                ))}
+              </Card>
             </div>
           ) : null}
         </section>
