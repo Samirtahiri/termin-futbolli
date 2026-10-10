@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useStoreReady } from "@/hooks/useApp";
 import { useRemoteFlag, useSupabaseAuth } from "@/hooks/useRemote";
+import { BallMark } from "@/components/BallMark";
 import { cx } from "@/lib/cx";
 import { isLoggedIn } from "@/lib/selectors";
 
@@ -25,8 +26,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-20 border-b border-[#cfc8ba]/80 bg-[#f4f1ea]/90 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-lg items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center" aria-hidden>
-              <BallIcon />
+            <span className="grid h-10 w-10 place-items-center" aria-hidden>
+              <BallMark />
             </span>
             <span className="text-[15px] font-semibold tracking-tight text-[#14241c]">
               Termin
@@ -87,33 +88,5 @@ function Splash() {
     <div className="grid place-items-center py-24 text-ink-mute text-sm">
       Duke u ngarkuar…
     </div>
-  );
-}
-
-function BallIcon() {
-  return (
-    <svg viewBox="0 0 64 64" className="h-9 w-9" aria-hidden>
-      <defs>
-        <radialGradient id="termin-ball" cx="32%" cy="28%" r="72%">
-          <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="55%" stopColor="#f4f1ea" />
-          <stop offset="100%" stopColor="#cfc8ba" />
-        </radialGradient>
-      </defs>
-      <circle cx="32" cy="32" r="31" fill="#0d5a34" />
-      <circle cx="32" cy="32" r="26" fill="url(#termin-ball)" />
-      <path
-        fill="#14241c"
-        d="M32 18.2 39.1 23.4 36.4 32.2h-8.8l-2.7-8.8Z"
-      />
-      <path
-        fill="none"
-        stroke="#14241c"
-        strokeWidth="2.2"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        d="M32 18.2 39.1 23.4l9.2-1.4M24.9 23.4 15.7 22M36.4 32.2l4.1 8.6 9.2 1.2M27.6 32.2l-4.1 8.6-9.2 1.2M29.2 40.8h5.6L38 51.2M26 51.2 29.2 40.8M15.7 22l5.2 10.2M48.3 22 43.1 32.2M32 6.4v11.8M10.6 48.6l8.6-6.6M53.4 48.6l-8.6-6.6"
-      />
-    </svg>
   );
 }

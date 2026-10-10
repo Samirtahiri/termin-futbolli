@@ -11,6 +11,10 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: "Termin — futboll",
   description: "In, ekipet dhe fusha për terminet e futbollit.",
+  icons: {
+    icon: [{ url: "/favicon.svg?v=3", type: "image/svg+xml" }],
+    apple: [{ url: "/favicon.svg?v=3", type: "image/svg+xml" }],
+  },
 };
 
 export const viewport: Viewport = {
