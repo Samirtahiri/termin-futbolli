@@ -23,17 +23,7 @@ export default function RosterPage() {
     deviceKey: state.identity?.deviceKey,
   });
 
-  if (!isLoggedIn(state)) {
-    return (
-      <div className="space-y-3">
-        <h1 className="text-2xl font-semibold tracking-tight">Lojtarët</h1>
-        <p className="text-sm text-ink-soft">Hyr si organizator për roster-in.</p>
-        <Link href="/hyr" className="font-semibold text-pitch-800">
-          Shko te Hyr
-        </Link>
-      </div>
-    );
-  }
+  const loggedIn = isLoggedIn(state);
 
   return (
     <div className="space-y-6">
@@ -43,40 +33,50 @@ export default function RosterPage() {
         </p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight">Lojtarët</h1>
         <p className="mt-2 text-sm text-ink-soft">
-          I rregullt. I shton këtu, pastaj 1 tap te termin nëse tha In vetëm në
-          Viber.
+          {loggedIn
+            ? "I rregullt. I shton këtu, pastaj 1 tap te termin nëse tha In vetëm në Viber."
+            : "Lista e emrave. Shtimi dhe fshirja janë për organizatorin."}
         </p>
       </div>
 
-      <Card className="p-4 space-y-3">
-        <Field label="Emri">
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Besnik"
-          />
-        </Field>
-        <label className="flex items-center gap-2 text-sm font-medium">
-          <input
-            type="checkbox"
-            checked={isGk}
-            onChange={(e) => setIsGk(e.target.checked)}
-            className="accent-pitch-700"
-          />
-          GK
-        </label>
-        <Button
-          block
-          disabled={!name.trim()}
-          onClick={() => {
-            addRosterPlayer({ name, isGk });
-            setName("");
-            setIsGk(false);
-          }}
-        >
-          Shto te roster-i
-        </Button>
-      </Card>
+      {loggedIn ? (
+        <Card className="p-4 space-y-3">
+          <Field label="Emri">
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Besnik"
+            />
+          </Field>
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              checked={isGk}
+              onChange={(e) => setIsGk(e.target.checked)}
+              className="accent-pitch-700"
+            />
+            GK
+          </label>
+          <Button
+            block
+            disabled={!name.trim()}
+            onClick={() => {
+              addRosterPlayer({ name, isGk });
+              setName("");
+              setIsGk(false);
+            }}
+          >
+            Shto te roster-i
+          </Button>
+        </Card>
+      ) : (
+        <p className="text-sm text-ink-soft">
+          <Link href="/hyr" className="font-semibold text-pitch-800">
+            Hyr
+          </Link>{" "}
+          si organizator nëse do t’i shtosh emra.
+        </p>
+      )}
 
       <section>
         <SectionTitle title={`${state.people.length} emra`} />
@@ -94,10 +94,12 @@ export default function RosterPage() {
                     {formatRating(averageRating(p.id, state.ratings))}
                   </p>
                 </div>
-                <DeleteButton
-                  label="Fshi"
-                  onClick={() => removeRosterPlayer(p.id)}
-                />
+                {loggedIn ? (
+                  <DeleteButton
+                    label="Fshi"
+                    onClick={() => removeRosterPlayer(p.id)}
+                  />
+                ) : null}
               </div>
             ))
           )}

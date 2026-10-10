@@ -62,7 +62,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {NAV.map((item) => {
             const active = path === item.href;
             const href =
-              !loggedIn && item.href !== "/" ? "/hyr" : item.href;
+              !loggedIn && item.href === "/krijo" ? "/hyr" : item.href;
             return (
               <Link
                 key={item.href}
