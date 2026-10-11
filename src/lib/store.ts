@@ -71,6 +71,7 @@ export const store = {
     listeners.forEach((l) => l());
   },
   set(next: AppState, options?: { skipRemote?: boolean }): void {
+    console.log("store.set called with", { matchCount: next.matches.length, skipRemote: options?.skipRemote });
     current = next;
     persistState(next);
     listeners.forEach((l) => l());
@@ -80,7 +81,10 @@ export const store = {
     store.set(recipe(current), { skipRemote: true });
   },
   update(recipe: (prev: AppState) => AppState): void {
-    store.set(recipe(current));
+    console.log("store.update called, current matches:", current.matches.length);
+    const result = recipe(current);
+    console.log("recipe returned, new matches:", result.matches.length);
+    store.set(result);
   },
   subscribe(listener: Listener): () => void {
     listeners.add(listener);

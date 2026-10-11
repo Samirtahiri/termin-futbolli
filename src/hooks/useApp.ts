@@ -48,10 +48,12 @@ export function useActions(): BoundActions {
     (Object.keys(actions) as ActionName[]).forEach((key) => {
       // @ts-expect-error generic bind
       bound[key] = (...args: unknown[]) => {
+        console.log(`Action ${key} called with args:`, args);
         let result: unknown;
         store.update((prev) => {
           // @ts-expect-error generic apply
           result = actions[key](prev, ...args);
+          console.log(`Action ${key} returned:`, result);
           if (result && typeof result === "object" && "state" in result) {
             return (result as { state: AppState }).state;
           }
@@ -60,6 +62,7 @@ export function useActions(): BoundActions {
         if (key === "deleteMatch" && typeof args[0] === "string") {
           void deleteRemoteMatch(args[0]);
         }
+        console.log(`Action ${key} final result:`, result);
         return result;
       };
     });
