@@ -39,8 +39,18 @@ export default function CreatePage() {
       <MatchForm
         submitLabel="Krijo dhe hap linkun"
         onSubmit={(draft) => {
-          const result = createMatch(draft) as { match: { code: string } };
-          router.push(`/t/${result.match.code}`);
+          try {
+            const result = createMatch(draft) as { match: { code: string } };
+            if (!result || !result.match || !result.match.code) {
+              console.error("createMatch returned invalid result:", result);
+              alert("Gabim: Nuk u krijua termini. Shiko konsolën për detaje.");
+              return;
+            }
+            router.push(`/t/${result.match.code}`);
+          } catch (error) {
+            console.error("Error creating match:", error);
+            alert(`Gabim gjatë krijimit të terminit: ${error instanceof Error ? error.message : String(error)}`);
+          }
         }}
       />
     </div>

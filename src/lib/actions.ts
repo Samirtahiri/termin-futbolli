@@ -102,11 +102,13 @@ export function createMatch(
     benchSize: number;
   },
 ): { state: AppState; match: Match } {
+  console.log("createMatch called with:", { input, hasOrganizer: !!state.organizer, supabaseEnabled: isSupabaseEnabled(), supabaseUserId: state.organizer?.supabaseUserId });
   if (!state.organizer) throw new Error("Duhet të hysh si organizator");
   if (isSupabaseEnabled() && !state.organizer.supabaseUserId) {
     throw new Error("Hyr me email para se të krijosh termin");
   }
   const organizerId = state.organizer.supabaseUserId ?? state.organizer.id;
+  console.log("Creating match with organizerId:", organizerId);
   const formation = defaultFormation(input.fieldType);
   const match: Match = {
     id: uid("m"),
@@ -126,6 +128,7 @@ export function createMatch(
     formationB: formation,
     createdAt: new Date().toISOString(),
   };
+  console.log("Match created successfully:", { matchId: match.id, code: match.code });
   return { state: { ...state, matches: [match, ...state.matches] }, match };
 }
 
