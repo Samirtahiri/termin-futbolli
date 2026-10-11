@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useStoreReady } from "@/hooks/useApp";
 import { useRemoteFlag, useSupabaseAuth } from "@/hooks/useRemote";
 import { BallMark } from "@/components/BallMark";
+import { LogoutButton } from "@/components/LogoutButton";
 import { cx } from "@/lib/cx";
 import { isLoggedIn } from "@/lib/selectors";
 
@@ -44,12 +45,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               {remote ? "Online" : "Lokal"}
             </span>
-            <Link
-              href={loggedIn ? "/krijo" : "/hyr"}
-              className="text-sm font-semibold text-[#0d5a34]"
-            >
-              {loggedIn ? "Organizator" : "Hyr"}
-            </Link>
+            {loggedIn ? (
+              <LogoutButton />
+            ) : (
+              <Link href="/hyr" className="text-sm font-semibold text-[#0d5a34]">
+                Hyr
+              </Link>
+            )}
           </div>
         </div>
       </header>

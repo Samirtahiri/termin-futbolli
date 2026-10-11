@@ -16,9 +16,30 @@ export function playersOf(state: AppState, matchId: string): MatchPlayer[] {
   return state.matchPlayers.filter((p) => p.matchId === matchId);
 }
 
+const MATCH_LENGTH_MS = 90 * 60 * 1000;
+
+export function isMatchFinished(match: Match, now = Date.now()): boolean {
+  if (match.status === "played") return true;
+  const start = new Date(match.startsAt).getTime();
+  if (Number.isNaN(start)) return false;
+  return now >= start + MATCH_LENGTH_MS;
+}
+
 export function myMatches(state: AppState): Match[] {
   return state.matches
     .filter((m) => isOrganizer(state, m))
+    .sort((a, b) => +new Date(b.startsAt) - +new Date(a.startsAt));
+}
+
+export function myActiveMatches(state: AppState): Match[] {
+  return myMatches(state)
+    .filter((m) => !isMatchFinished(m))
+    .sort((a, b) => +new Date(a.startsAt) - +new Date(b.startsAt));
+}
+
+export function myFinishedMatches(state: AppState): Match[] {
+  return myMatches(state)
+    .filter((m) => isMatchFinished(m))
     .sort((a, b) => +new Date(b.startsAt) - +new Date(a.startsAt));
 }
 
