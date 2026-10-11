@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { MatchForm } from "@/components/MatchForm";
@@ -10,6 +11,8 @@ export default function CreatePage() {
   const router = useRouter();
   const { state } = useStoreReady();
   const { createMatch } = useActions();
+  const [error, setError] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
 
   if (!isLoggedIn(state)) {
     return (
@@ -36,20 +39,63 @@ export default function CreatePage() {
           Bosh. Pa emra. Pastaj e dërgon linkun.
         </p>
       </div>
+
+      {error && (
+        <div className="rounded-2xl bg-[#fee2e2] px-4 py-3">
+          <p className="text-sm font-semibold text-[#991b1b]">Gabim</p>
+          <p className="text-sm text-[#991b1b] mt-1">{error}</p>
+        </div>
+      )}
+
+      {creating && (
+        <div className="rounded-2xl bg-[#e5f4eb] px-4 py-3">
+          <p className="text-sm font-semibold text-[#0d5a34]">Po krijohet termini...</p>
+        </div>
+      )}
+
       <MatchForm
         submitLabel="Krijo dhe hap linkun"
-        onSubmit={(draft) => {
+        onSubmit={async (draft) => {
+          if (creating) return;
+          
+          setError(null);
+          setCreating(true);
+
           try {
-            const result = createMatch(draft) as { match: { code: string } };
-            if (!result || !result.match || !result.match.code) {
-              console.error("createMatch returned invalid result:", result);
-              alert("Gabim: Nuk u krijua termini. Shiko konsolën për detaje.");
-              return;
+            console.log("Creating match with draft:", draft);
+            console.log("Current state:", { 
+              hasOrganizer: !!state.organizer, 
+              organizerId: state.organizer?.id,
+              supabaseUserId: state.organizer?.supabaseUserId 
+            });
+
+            const result = createMatch(draft) as { state: { matches: unknown[] }; match: { id: string; code: string } };
+            
+            console.log("createMatch result:", result);
+
+            if (!result) {
+              throw new Error("createMatch nuk ktheu asnjë rezultat");
             }
+
+            if (!result.match) {
+              throw new Error("createMatch nuk ktheu match");
+            }
+
+            if (!result.match.code) {
+              throw new Error("Match u krijua por nuk ka kod");
+            }
+
+            console.log("Match created successfully, navigating to:", `/t/${result.match.code}`);
+            
+            // Prit një moment që të ruhet në localStorage
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
             router.push(`/t/${result.match.code}`);
-          } catch (error) {
-            console.error("Error creating match:", error);
-            alert(`Gabim gjatë krijimit të terminit: ${error instanceof Error ? error.message : String(error)}`);
+          } catch (err) {
+            console.error("Error creating match:", err);
+            const message = err instanceof Error ? err.message : String(err);
+            setError(`Nuk u krijua termini: ${message}`);
+            setCreating(false);
           }
         }}
       />
