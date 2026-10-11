@@ -14,6 +14,19 @@ export default function CreatePage() {
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
 
+  // Kontrollo nëse ka problem me Supabase auth
+  useEffect(() => {
+    if (state.organizer && !state.organizer.supabaseUserId) {
+      const hasSupabaseConfig = Boolean(
+        process.env.NEXT_PUBLIC_SUPABASE_URL &&
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      );
+      if (hasSupabaseConfig) {
+        console.warn("Supabase is configured but user is not authenticated with Supabase");
+      }
+    }
+  }, [state.organizer]);
+
   if (!isLoggedIn(state)) {
     return (
       <div className="space-y-3">
