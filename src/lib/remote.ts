@@ -225,30 +225,47 @@ export async function pushAppState(state: AppState): Promise<void> {
     const { error } = await sb.from("people").upsert(
       state.people.map((p) => ({ id: p.id, name: p.name, is_gk: p.isGk })),
     );
-    if (error) console.error("supabase people", error.message);
+    if (error) throw new Error(error.message);
   }
   if (state.matches.length) {
     const { error } = await sb
       .from("matches")
       .upsert(state.matches.map(matchToRow));
-    if (error) console.error("supabase matches", error.message);
+    if (error) throw new Error(error.message);
   }
   if (state.matchPlayers.length) {
     const { error } = await sb
       .from("match_players")
       .upsert(state.matchPlayers.map(playerToRow));
-    if (error) console.error("supabase players", error.message);
+    if (error) throw new Error(error.message);
   }
   if (state.ratings.length) {
     const { error } = await sb.from("ratings").upsert(
       state.ratings.map(ratingToRow),
     );
-    if (error) console.error("supabase ratings", error.message);
+    if (error) throw new Error(error.message);
   }
 }
 
 let pushTimer: ReturnType<typeof setTimeout> | null = null;
 let pending: AppState | null = null;
+
+export async function pushNow(state: AppState): Promise<string | null> {
+  if (!isSupabaseEnabled()) return null;
+  if (pushTimer) {
+    clearTimeout(pushTimer);
+    pushTimer = null;
+  }
+  pending = null;
+  try {
+    await pushAppState(state);
+    return null;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Supabase s’u ruajt.";
+    console.error("supabase push", message);
+    return message;
+  }
+}
 
 export function schedulePush(state: AppState): void {
   if (!isSupabaseEnabled()) return;
@@ -294,4 +311,12 @@ export async function deleteRemoteMatch(matchId: string): Promise<void> {
   const sb = getSupabase();
   if (!sb) return;
   await sb.from("matches").delete().eq("id", matchId);
+}
+
+export async function deleteRemotePerson(personId: string): Promise<void> {
+  const sb = getSupabase();
+  if (!sb) return;
+  await sb.from("ratings").delete().eq("ratee_id", personId);
+  await sb.from("match_players").delete().eq("person_id", personId);
+  await sb.from("people").delete().eq("id", personId);
 }

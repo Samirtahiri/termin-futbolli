@@ -34,7 +34,10 @@ export function toLocalInputs(iso: string): { date: string; time: string } {
 }
 
 export function fromLocalInputs(date: string, time: string): string {
-  return new Date(`${date}T${time}`).toISOString();
+  if (!date || !time) throw new Error("Zgjedh datën dhe orën.");
+  const d = new Date(`${date}T${time}`);
+  if (Number.isNaN(d.getTime())) throw new Error("Data ose ora s’është e saktë.");
+  return d.toISOString();
 }
 
 export function todayInputs(): { date: string; time: string } {

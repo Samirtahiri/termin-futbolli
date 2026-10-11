@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useSyncExternalStore } from "react";
 import * as actions from "@/lib/actions";
-import { deleteRemoteMatch } from "@/lib/remote";
+import { deleteRemoteMatch, deleteRemotePerson } from "@/lib/remote";
 import { emptyState, store } from "@/lib/store";
 import type { AppState } from "@/lib/types";
 
@@ -59,6 +59,9 @@ export function useActions(): BoundActions {
         });
         if (key === "deleteMatch" && typeof args[0] === "string") {
           void deleteRemoteMatch(args[0]);
+        }
+        if (key === "removeRosterPlayer" && typeof args[0] === "string") {
+          void deleteRemotePerson(args[0]);
         }
         return result;
       };

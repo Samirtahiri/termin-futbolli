@@ -21,10 +21,12 @@ export function MatchForm({
   initial,
   submitLabel,
   onSubmit,
+  disabled,
 }: {
   initial?: Partial<Match>;
   submitLabel: string;
   onSubmit: (draft: MatchDraft) => void;
+  disabled?: boolean;
 }) {
   const seed = initial?.startsAt ? toLocalInputs(initial.startsAt) : todayInputs();
   const [title, setTitle] = useState(initial?.title ?? "");
@@ -40,6 +42,7 @@ export function MatchForm({
       className="space-y-4"
       onSubmit={(e) => {
         e.preventDefault();
+        if (disabled) return;
         onSubmit({
           title,
           startsAt: fromLocalInputs(date, time),
@@ -118,7 +121,7 @@ export function MatchForm({
           onChange={(e) => setBenchSize(Number(e.target.value))}
         />
       </Field>
-      <Button type="submit" size="lg" block>
+      <Button type="submit" size="lg" block disabled={disabled}>
         {submitLabel}
       </Button>
     </form>

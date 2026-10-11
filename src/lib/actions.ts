@@ -406,6 +406,12 @@ export function removeRosterPlayer(state: AppState, personId: string): AppState 
   return {
     ...state,
     people: state.people.filter((p) => p.id !== personId),
+    matchPlayers: state.matchPlayers.filter((p) => p.personId !== personId),
+    ratings: state.ratings.filter((r) => r.rateeId !== personId),
+    matches: state.matches.map((m) => ({
+      ...m,
+      managerPersonIds: m.managerPersonIds.filter((id) => id !== personId),
+    })),
   };
 }
 
