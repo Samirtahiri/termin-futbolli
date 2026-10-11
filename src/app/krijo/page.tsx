@@ -50,7 +50,7 @@ export default function CreatePage() {
       <MatchForm
         submitLabel={creating ? "Duke u ruajtur…" : "Krijo dhe hap linkun"}
         disabled={creating}
-        onSubmit={async (draft) => {
+        onSubmit={(draft) => {
           if (creating) return;
           setError(null);
           setCreating(true);
@@ -60,8 +60,7 @@ export default function CreatePage() {
               | undefined;
             const code = result?.match?.code;
             if (!code) throw new Error("Termini nuk u krijua.");
-            const remoteError = await pushNow(store.get());
-            if (remoteError) throw new Error(remoteError);
+            void pushNow(store.get());
             router.push(`/t/${code}`);
           } catch (err) {
             setError(

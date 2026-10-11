@@ -57,8 +57,9 @@ export function Button({
       aria-busy={locked}
       onClick={(event) => {
         if (waiting) return;
-        setLocked(true);
         onClick?.(event);
+        if (type === "submit") return;
+        setLocked(true);
         window.setTimeout(() => setLocked(false), 800);
       }}
       className={cx(

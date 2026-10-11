@@ -43,14 +43,20 @@ export function MatchForm({
       onSubmit={(e) => {
         e.preventDefault();
         if (disabled) return;
-        onSubmit({
-          title,
-          startsAt: fromLocalInputs(date, time),
-          location,
-          notes,
-          fieldType,
-          benchSize,
-        });
+        try {
+          onSubmit({
+            title,
+            startsAt: fromLocalInputs(date, time),
+            location,
+            notes,
+            fieldType,
+            benchSize,
+          });
+        } catch (err) {
+          window.alert(
+            err instanceof Error ? err.message : "Data ose ora s’është e saktë.",
+          );
+        }
       }}
     >
       <Field label="Titulli">
